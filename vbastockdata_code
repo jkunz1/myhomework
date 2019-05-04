@@ -1,0 +1,86 @@
+
+Sub StockTickerSummary()
+Dim ws As Worksheet
+
+
+Dim ticker As String
+Dim Volume As Double
+Dim YearOpen As Double
+Dim YearClose As Double
+Dim Yearchange As Double
+Dim percentchange As Double
+
+
+Volume = 0
+
+
+For Each ws In ThisWorkbook.Worksheets
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly Change"
+    ws.Cells(1, 11).Value = "Percent Change"
+    ws.Cells(1, 12).Value = "Total Stock Volume"
+
+Summary_Table_Row = 2
+    
+
+    For i = 2 To ws.UsedRange.Rows.Count
+
+
+        If ws.Cells(i - 1, 1).Value <> ws.Cells(i, 1).Value Then
+            YearOpen = ws.Cells(i, 3).Value
+
+        End If
+        
+        If Cells(i - 1, 1) = Cells(i, 1) And Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+        YearClose = ws.Cells(i, 6).Value
+        Yearchange = YearClose - YearOpen
+        Volume = Volume + ws.Cells(i, 7).Value
+        ticker = ws.Cells(i, 1).Value
+             If YearOpen = 0 Then
+            percentchange = 0
+        
+        
+        Else
+        percentchange = Yearchange / YearOpen
+            
+        End If
+
+
+        ws.Cells(Summary_Table_Row, 9).Value = ticker
+        ws.Cells(Summary_Table_Row, 10).Value = Yearchange
+        ws.Cells(Summary_Table_Row, 11).Value = percentchange
+        ws.Cells(Summary_Table_Row, 12).Value = Volume
+        
+
+        Summary_Table_Row = Summary_Table_Row + 1
+
+        Volume = 0
+        
+        Else
+            Volume = Volume + ws.Cells(i, 7).Value
+
+         End If
+
+
+    Next i
+    
+   
+    For j = 2 To ws.UsedRange.Rows.Count
+    If ws.Cells(j, 10) >= 0 Then
+    ws.Cells(j, 10).Interior.ColorIndex = 4
+     
+    Else
+    ws.Cells(j, 10).Interior.ColorIndex = 3
+
+    End If
+    
+    Next j
+
+    ws.Columns("K").NumberFormat = "0.00%"
+    
+
+   
+
+Next
+
+End Sub
